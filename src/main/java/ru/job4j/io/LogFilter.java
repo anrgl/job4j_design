@@ -21,16 +21,14 @@ public class LogFilter {
         try (PrintWriter out = new PrintWriter(
                 new BufferedOutputStream(
                         new FileOutputStream(file)))) {
-            StringBuilder text = new StringBuilder();
-            log.forEach(l -> text.append(l).append(System.lineSeparator()));
-            out.write(text.toString());
+            log.forEach(out::println);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        List<String> log = filter("log.txt");
-        save(log, "404.txt");
+        List<String> log = filter("./data/log.txt");
+        save(log, "./data/404.txt");
     }
 }
