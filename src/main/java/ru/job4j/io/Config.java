@@ -19,9 +19,13 @@ public class Config {
             in.lines()
                     .filter(line -> !line.startsWith("#"))
                     .filter(line -> !line.isEmpty())
-                    .map(line -> line.split("="))
+                    .map(line -> {
+                        if (line.split("=").length != 2) {
+                            throw new IllegalArgumentException();
+                        }
+                        return line.split("=");
+                    })
                     .forEach(line -> values.put(line[0], line[1]));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -29,7 +33,6 @@ public class Config {
 
     public String value(String key) {
         return values.get(key);
-//        throw new UnsupportedOperationException("Don't impl this method yet!");
     }
 
     @Override
@@ -44,6 +47,10 @@ public class Config {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Config("app.properties"));
+        Config config = new Config("./data/app.properties");
+        config.load();
+        String value = config.value("hibernate.connection.password");
+        System.out.println(value);
+        System.out.println(config);
     }
 }
