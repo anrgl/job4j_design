@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class Config {
     private final String path;
@@ -15,17 +16,17 @@ public class Config {
     }
 
     public void load() {
+        String[] pairs;
         try (BufferedReader in = new BufferedReader(new FileReader(path))) {
-            in.lines()
-                    .filter(line -> !line.startsWith("#"))
-                    .filter(line -> !line.isEmpty())
-                    .map(line -> {
-                        if (line.split("=").length != 2) {
-                            throw new IllegalArgumentException();
-                        }
-                        return line.split("=");
-                    })
-                    .forEach(line -> values.put(line[0], line[1]));
+            for (String line : in.lines().collect(Collectors.toList())) {
+                if (!line.startsWith("#") && !line.isEmpty()) {
+                    pairs = line.split("=");
+                    if (pairs.length != 2) {
+                        throw new IllegalArgumentException();
+                    }
+                    values.put(pairs[0], pairs[1]);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
