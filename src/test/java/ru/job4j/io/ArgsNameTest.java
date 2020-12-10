@@ -23,4 +23,16 @@ public class ArgsNameTest {
         ArgsName jvm = ArgsName.of(new String[]{});
         jvm.get("Xmx");
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenArgIsWrong1() {
+        ArgsName wrongArg = ArgsName.of(new String[]{"key=value"});
+        wrongArg.get("key");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenArgIsWrong2() {
+        ArgsName wrongArg = ArgsName.of(new String[]{"-key=value=value2"});
+        wrongArg.get("key");
+    }
 }

@@ -1,8 +1,8 @@
 package ru.job4j.io;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ArgsName {
     private final Map<String, String> values = new HashMap<>();
@@ -15,10 +15,13 @@ public class ArgsName {
     }
 
     private void parse(String[] args) {
-        Arrays.stream(args)
-                .map(arg -> arg.substring(1))
-                .map(arg -> arg.split("="))
-                .forEach(arg -> values.put(arg[0], arg[1]));
+        for (String arg : args) {
+            if (!Pattern.matches("-[\\w]+=[\\w\\-.]+", arg)) {
+                throw new IllegalArgumentException("Wrong argument: " + arg);
+            }
+            String[] pair = arg.substring(1).split("=");
+            values.put(pair[0], pair[1]);
+        }
     }
 
     public static ArgsName of(String[] args) {
@@ -33,5 +36,8 @@ public class ArgsName {
 
         ArgsName zip = ArgsName.of(new String[]{"-out=project.zip", "-encoding=UTF-8"});
         System.out.println(zip.get("out"));
+
+        ArgsName exp = ArgsName.of(new String[]{"key=42"});
+        System.out.println(exp.get("key"));
     }
 }
