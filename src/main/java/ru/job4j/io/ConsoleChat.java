@@ -35,9 +35,7 @@ public class ConsoleChat {
     private void saveMessages(List<String> messages, String path) {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(
                 new FileWriter(path, StandardCharsets.UTF_8, true)))) {
-            for (String message : messages) {
-                out.println(message);
-            }
+            messages.forEach(out::println);
         } catch (Exception e) {
             e.printStackTrace();
         }
