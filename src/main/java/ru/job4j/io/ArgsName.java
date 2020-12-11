@@ -15,8 +15,9 @@ public class ArgsName {
     }
 
     private void parse(String[] args) {
+        Pattern pattern = Pattern.compile("^-[\\w]+=[\\w\\-.]+$");
         for (String arg : args) {
-            if (!Pattern.matches("-[\\w]+=[\\w\\-.]+", arg)) {
+            if (!pattern.matcher(arg).find()) {
                 throw new IllegalArgumentException("Wrong argument: " + arg);
             }
             String[] pair = arg.substring(1).split("=");
