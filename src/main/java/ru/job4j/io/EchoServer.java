@@ -8,6 +8,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class EchoServer {
+    private static final byte[] OK = "HTTP/1.1 200 OK\r\n".getBytes();
+
+    private static String parse(String header) {
+        if (header.startsWith("GET")) {
+            return header.split(" ")[1].substring(6);
+        }
+        return "";
+    }
+
     public static void main(String[] args) throws IOException {
         try (ServerSocket server = new ServerSocket(9000)) {
             while (true) {
@@ -17,12 +26,21 @@ public class EchoServer {
                              new InputStreamReader(socket.getInputStream()))) {
                     String str;
                     while (!(str = in.readLine()).isEmpty()) {
-                        if (str.equals("GET /?msg=Bye HTTP/1.1")) {
+                        String msg = parse(str);
+                        System.out.println(msg);
+                        if (msg.equals("Exit")) {
+                            out.write(OK);
+                            out.write("Bye bye\r\n".getBytes());
                             System.exit(0);
+                        } else if (msg.equals("Hello")) {
+                            out.write(OK);
+                            out.write("Hello\r\n".getBytes());
+                        } else if (!msg.isEmpty()) {
+                            out.write(OK);
+                            out.write((msg + "\r\n").getBytes());
                         }
                         System.out.println(str);
                     }
-                    out.write("HTTP/1.1 200 OK\r\n\\".getBytes());
                 }
             }
         }
