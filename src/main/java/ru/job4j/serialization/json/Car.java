@@ -1,9 +1,11 @@
 package ru.job4j.serialization.json;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Car {
     private final boolean isSportCar;
@@ -18,6 +20,22 @@ public class Car {
         this.checkPoints = checkPoints;
     }
 
+    public boolean isSportCar() {
+        return isSportCar;
+    }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public Person getOwner() {
+        return owner;
+    }
+
+    public String[] getCheckPoints() {
+        return checkPoints;
+    }
+
     @Override
     public String toString() {
         return "Car{"
@@ -29,37 +47,32 @@ public class Car {
     }
 
     public static void main(String[] args) {
+        JSONObject jsonOwner = new JSONObject("{\"sex\":true,"
+                + "\"age\":35,"
+                + "\"contact\":{\"phone\":\"8-800-2000-600\"},"
+                + "\"statuses\":[\"Worker\", \"Married\"]}");
+
+        List<String> checkPoints = new ArrayList<>();
+        checkPoints.add("Moscow");
+        checkPoints.add("Saint Petersburg");
+        JSONArray jsonCheckPoints = new JSONArray(checkPoints);
+
+        System.out.println(jsonOwner.toString());
+        System.out.println(jsonCheckPoints);
+
         final Car car = new Car(
                 false,
-                180,
-                new Person(
-                        true,
-                        35,
-                        new Contact("8-800-2000-600"),
-                        "Worker", "Married"),
-                "Moscow", "Saint Petersburg"
-                );
-        final Gson gson = new GsonBuilder().create();
-        System.out.println(gson.toJson(car));
+                150,
+                new Person(false, 42, new Contact("11-123"), "Free"),
+                "Moscow");
 
-        final String sportCar =
-                "{"
-                    + "\"isSportCar\":true,"
-                    + "\"maxSpeed\":320,"
-                    + "\"owner\":"
-                            + "{"
-                                + "\"sex\":true,"
-                                + "\"age\":42,"
-                                + "\"contact\":"
-                                    + "{"
-                                        + "\"phone\":\"8-800-2000-600\""
-                                    + "},"
-                                + "\"statuses\":"
-                                    + "[\"Dev\",\"Free\"]"
-                            + "},"
-                        + "\"checkPoints\":"
-                            + "[\"Moscow\",\"Saint Petersburg\"]"
-                + "}";
-        System.out.println(gson.fromJson(sportCar, Car.class));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("isSportCar", car.isSportCar());
+        jsonObject.put("maxSpeed", car.getMaxSpeed());
+        jsonObject.put("owner", jsonOwner);
+        jsonObject.put("checkPoints", jsonCheckPoints);
+
+        System.out.println(jsonObject.toString());
+        System.out.println(new JSONObject(car).toString());
     }
 }
