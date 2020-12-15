@@ -2,6 +2,7 @@ package ru.job4j.it;
 
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -56,9 +57,24 @@ public class FlatMapTest {
     @Test(expected = NoSuchElementException.class)
     public void whenEmpty() {
         Iterator<Iterator<Object>> data = List.of(
-                List.of().iterator()
+                Collections.emptyIterator()
         ).iterator();
         FlatMap<Object> flat = new FlatMap<>(data);
         flat.next();
+    }
+
+    @Test
+    public void whenSkipEmptyIterator() {
+        Iterator<Iterator<Integer>> data = List.of(
+                List.of(1).iterator(),
+                Collections.<Integer>emptyIterator(),
+                List.of(2, 3).iterator()
+        ).iterator();
+        FlatMap<Integer> flat = new FlatMap<>(data);
+        assertThat(flat.next(), is(1));
+        assertThat(flat.hasNext(), is(true));
+        assertThat(flat.next(), is(2));
+        assertThat(flat.next(), is(3));
+        assertThat(flat.hasNext(), is(false));
     }
 }
