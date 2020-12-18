@@ -1,6 +1,5 @@
 package ru.job4j.generics;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -27,6 +26,7 @@ public class SimpleArray<T> implements Iterable<T> {
         Objects.checkIndex(index, size);
         System.arraycopy(data, index + 1, data, index, size - index - 1);
         data[data.length - 1] = null;
+        point--;
     }
 
     public T get(int index) {
@@ -40,7 +40,7 @@ public class SimpleArray<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return Arrays.stream(this.data).iterator();
+        return new SimpleArrayIterator<>(this);
     }
 
     public static void main(String[] args) {

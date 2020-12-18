@@ -87,4 +87,19 @@ public class SimpleArrayTest {
         assertThat(array.get(1), is(2));
         assertThat(array.get(2), is(nullValue()));
     }
+
+    @Test
+    public void whenAddRemoveAndAdd() {
+        SimpleArray<Integer> array = new SimpleArray<>(5);
+        array.add(1);
+        array.remove(0);
+        array.add(2);
+        array.remove(0);
+        array.add(3);
+        array.add(4);
+        array.remove(1);
+        array.add(5);
+        assertThat(array.get(0), is(3));
+        assertThat(array.get(1), is(5));
+    }
 }
