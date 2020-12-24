@@ -1,6 +1,8 @@
 package ru.job4j.collection;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class SimpleLink<T> implements Iterable<T> {
@@ -26,10 +28,7 @@ public class SimpleLink<T> implements Iterable<T> {
     public T get(int index) {
         Objects.checkIndex(index, size);
         Node<T> node = first;
-        for (int i = 0; i < size; i++) {
-            if (i == index) {
-                break;
-            }
+        for (int i = 0; i < index; i++) {
             node = node.getNext();
         }
         return node.getItem();
@@ -45,7 +44,28 @@ public class SimpleLink<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new SimpleLinkIterator<>(this, modCount);
+        return new Iterator<T>() {
+            private final int expectedModCount = modCount;
+            private Node<T> curr = first;
+
+            @Override
+            public boolean hasNext() {
+                return curr != null;
+            }
+
+            @Override
+            public T next() {
+                if (expectedModCount != modCount) {
+                    throw new ConcurrentModificationException();
+                }
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                T item = curr.getItem();
+                curr = curr.getNext();
+                return item;
+            }
+        };
     }
 
     private static class Node<T> {
