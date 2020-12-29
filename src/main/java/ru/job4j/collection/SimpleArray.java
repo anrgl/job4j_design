@@ -50,6 +50,15 @@ public class SimpleArray<T> implements Iterable<T> {
         container[--size] = null;
     }
 
+    public boolean contains(T item) {
+        for (T i : this) {
+            if (i.equals(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int size() {
         return size;
     }
