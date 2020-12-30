@@ -66,4 +66,10 @@ public class ForwardLinkedTest {
         assertThat(it.next(), is(2));
         assertThat(it.next(), is(1));
     }
+    
+    @Test
+    public void whenRevertEmptyForwardLinkedThenNoException() {
+        ForwardLinked<Integer> linked = new ForwardLinked<>();
+        linked.revert();
+    }
 }
