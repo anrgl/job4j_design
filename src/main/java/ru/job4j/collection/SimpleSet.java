@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class SimpleSet<T> implements Iterable<T> {
-    private SimpleArray<T> array = new SimpleArray<>();
+    private final SimpleArray<T> array = new SimpleArray<>();
     private int size = 0;
 
     public int getSize() {

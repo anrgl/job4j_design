@@ -41,4 +41,12 @@ public class SimpleSetTest {
         Iterator<Integer> it = set.iterator();
         it.next();
     }
+
+    @Test
+    public void whenElementsIsNull() {
+        SimpleSet<Object> set = new SimpleSet<>();
+        set.add(null);
+        set.add(null);
+        assertThat(set.getSize(), is(1));
+    }
 }

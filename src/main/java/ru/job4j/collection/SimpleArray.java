@@ -52,7 +52,7 @@ public class SimpleArray<T> implements Iterable<T> {
 
     public boolean contains(T item) {
         for (T i : this) {
-            if (i.equals(item)) {
+            if (Objects.equals(item, i)) {
                 return true;
             }
         }
