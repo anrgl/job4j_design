@@ -28,8 +28,8 @@ public class EchoServer {
                 try (OutputStream out = socket.getOutputStream();
                      BufferedReader in = new BufferedReader(
                              new InputStreamReader(socket.getInputStream()))) {
-                    String str;
-                    while (!(str = in.readLine()).isEmpty()) {
+                    String str = in.readLine();
+                    while (!str.isEmpty()) {
                         String msg = parse(str);
                         System.out.println(msg);
                         if (msg.equals("Exit")) {
@@ -44,6 +44,7 @@ public class EchoServer {
                             out.write((msg + "\r\n").getBytes());
                         }
                         System.out.println(str);
+                        str = in.readLine();
                     }
                 }
             }
