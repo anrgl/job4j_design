@@ -1,26 +1,29 @@
 package ru.job4j.jdbc;
 
-import ru.job4j.io.Config;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConnectionDemo {
-    public static void main(String[] args) throws ClassNotFoundException {
+    private static final Properties properties = new Properties();
+
+    public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException {
         Class.forName("org.postgresql.Driver");
-        Config config = new Config("./data/app.properties");
-        config.load();
-        String url = config.value("jdbc.connection.url");
-        String login = config.value("jdbc.connection.login");
-        String password = config.value("jdbc.connection.password");
-        try (Connection connection = DriverManager.getConnection(url, login, password)){
+        ClassLoader loader = ConnectionDemo.class.getClassLoader();
+        try (InputStream is = loader.getResourceAsStream("app.properties")) {
+            properties.load(is);
+        }
+        String url = properties.getProperty("jdbc.connection.url");
+        String login = properties.getProperty("jdbc.connection.login");
+        String password = properties.getProperty("jdbc.connection.password");
+        try (Connection connection = DriverManager.getConnection(url, login, password)) {
             DatabaseMetaData metaData = connection.getMetaData();
             System.out.println(metaData.getUserName());
             System.out.println(metaData.getURL());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
     }
 }
