@@ -26,6 +26,7 @@ public class ImportDB {
         try (BufferedReader rd = new BufferedReader(new FileReader(dump))) {
             rd.lines()
                     .map(line -> line.split(";"))
+                    .filter(l -> l.length == 2)
                     .forEach(l -> users.add(new User(l[0], l[1])));
         }
         return users;
@@ -39,9 +40,10 @@ public class ImportDB {
                 cfg.getProperty("spammer.password")
         )) {
             for (User user : users) {
-                try (PreparedStatement ps = cnt.prepareStatement("insert into users(name, email) values (?, ?)")) {
-                    ps.setString(1, user.name);
-                    ps.setString(2, user.email);
+                try (PreparedStatement ps =
+                             cnt.prepareStatement("insert into users(name, email) values (?, ?)")) {
+                    ps.setString(1, user.getName());
+                    ps.setString(2, user.getEmail());
                     ps.execute();
                 }
             }
@@ -49,15 +51,22 @@ public class ImportDB {
     }
 
     private static class User {
-        String name;
-        String email;
+        private final String name;
+        private final String email;
 
         public User(String name, String email) {
             this.name = name;
             this.email = email;
         }
-    }
 
+        public String getName() {
+            return name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         Properties cfg = new Properties();
